@@ -1,9 +1,10 @@
 package main
 
 import (
-	"encoding/json"
+	//	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/ryotaro612/go-openapi/internal/handler"
 	"github.com/swaggest/openapi-go/openapi3"
 	"github.com/swaggest/rest/gorillamux"
 	"net/http"
@@ -17,12 +18,14 @@ type status struct {
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/v1/health", func(w http.ResponseWriter, r *http.Request) {
-		// an example API handler
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+	// router.HandleFunc("/v1/health", func(w http.ResponseWriter, r *http.Request) {
+	// 	// an example API handler
+	// 	w.Header().Set("Content-Type", "application/json")
+	// 	json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 
-	}).Methods(http.MethodGet)
+	// }).Methods(http.MethodGet)
+
+	router.Handle("/v1/health", handler.NewHealthHandler()).Methods(http.MethodGet)
 
 	s := http.Server{
 		Addr:         ":8080",
