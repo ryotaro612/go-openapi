@@ -10,7 +10,7 @@ func (h *healthHandler) SetupOpenAPIOperation(oc openapi.OperationContext) error
 	oc.SetTags("My Tag")
 	oc.SetSummary("My Summary")
 	oc.SetDescription("This endpoint aggregates request in structured way.")
-	oc.AddRespStructure(healthResponse{})
+	oc.AddRespStructure(healthResponse{}, openapi.WithHTTPStatus(http.StatusBadRequest))
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusBadRequest))
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusInternalServerError))
 	return nil
