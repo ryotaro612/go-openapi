@@ -6,23 +6,25 @@ import (
 	"net/http"
 )
 
-func (h *userCreationHandler) SetupOpenAPIOperation(oc openapi.OperationContext) error {
+func (h *userUpdateHandler) SetupOpenAPIOperation(oc openapi.OperationContext) error {
 	oc.SetTags("My Tag")
 	oc.SetSummary("My Summary")
 	oc.SetDescription("This endpoint aggregates request in structured way.")
-	oc.AddReqStructure(createUserRequest{})
-	oc.AddRespStructure(createUserResponse{}, openapi.WithHTTPStatus(http.StatusCreated))
+	oc.AddReqStructure(UserUpdateRequest{})
+	oc.AddRespStructure(userUpdateResponse{}, openapi.WithHTTPStatus(http.StatusCreated))
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusBadRequest))
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusInternalServerError))
 	return nil
 }
 
 // https://manual.iij.jp/iid/iidapi/19001059.html#id-%E3%83%A6%E3%83%BC%E3%82%B6API-%E3%83%A6%E3%83%BC%E3%82%B6%E3%81%AE%E4%BD%9C%E6%88%90
-type createUserRequest struct {
-	UserName string `json:"userName" required:"true"`
+type UserUpdateRequest struct {
+	// https://github.com/swaggest/rest?tab=readme-ov-file
+	Id       string `path:"id"`
+	UserName string `json:"userName"`
 }
 
-type createUserResponse struct {
+type userUpdateResponse struct {
 	DisplayName string `json:"displayName"`
 }
 
@@ -35,14 +37,14 @@ type createUserResponse struct {
 // 	return &status
 // }
 
-func (h *userCreationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *userUpdateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	json.NewEncoder(w).Encode(createUserResponse{DisplayName: "jane.doe"})
+	json.NewEncoder(w).Encode(userUpdateResponse{DisplayName: "jane.doe"})
 }
 
-func newUserCreationHandler() *userCreationHandler {
-	return &userCreationHandler{}
+func newUserUpdateHandler() *userUpdateHandler {
+	return &userUpdateHandler{}
 }
 
-type userCreationHandler struct {
+type userUpdateHandler struct {
 }
