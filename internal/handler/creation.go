@@ -2,7 +2,14 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/swaggest/openapi-go"
+	"github.com/swaggest/rest"
+	"github.com/swaggest/rest/gorillamux"
+	"github.com/swaggest/rest/jsonschema"
+	"github.com/swaggest/rest/nethttp"
+	o "github.com/swaggest/rest/openapi"
+	"github.com/swaggest/rest/request"
 	"net/http"
 )
 
@@ -26,23 +33,34 @@ type createUserResponse struct {
 	DisplayName string `json:"displayName"`
 }
 
-// // https://pkg.go.dev/github.com/swaggest/rest@v0.2.67/gorillamux
-// func temp() {
-// 	decoderFactory := request.NewDecoderFactory()
-// 	decoderFactory.ApplyDefaults = true
-// 	decoderFactory.SetDecoderFunc(rest.ParamInPath, gorillamux.PathToURLValues)
-
-// 	return &status
-// }
-
 func (h *userCreationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	var in createUserRequest
+	fmt.Println("test")
+	if err := h.dec.Decode(r, &in, h.valid); err != nil {
+		fmt.Println("fail")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	fmt.Printf("user: %v\n", in)
+	fmt.Println("succ")
 	json.NewEncoder(w).Encode(createUserResponse{DisplayName: "jane.doe"})
 }
 
 func newUserCreationHandler() *userCreationHandler {
-	return &userCreationHandler{}
+
+	decoderFactory := request.NewDecoderFactory()
+	decoderFactory.ApplyDefaults = true
+	decoderFactory.SetDecoderFunc(rest.ParamInPath, gorillamux.PathToURLValues)
+	validator := jsonschema.NewFactory(&o.Collector{}, &o.Collector{}).MakeRequestValidator(http.MethodPost, &createUserRequest{}, nil)
+	return &userCreationHandler{
+		dec:   decoderFactory.MakeDecoder(http.MethodPost, createUserRequest{}, nil),
+		valid: validator,
+	}
+
 }
 
 type userCreationHandler struct {
+	dec   nethttp.RequestDecoder
+	valid rest.Validator
 }
