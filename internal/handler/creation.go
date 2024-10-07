@@ -6,17 +6,18 @@ import (
 	"net/http"
 )
 
-func (h *healthHandler) SetupOpenAPIOperation(oc openapi.OperationContext) error {
+func (h *userCreationHandler) SetupOpenAPIOperation(oc openapi.OperationContext) error {
 	oc.SetTags("My Tag")
 	oc.SetSummary("My Summary")
 	oc.SetDescription("This endpoint aggregates request in structured way.")
-	oc.AddRespStructure(healthResponse{})
+	//oc.AddReqStructure(myRequest{})
+	oc.AddRespStructure(response{})
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusBadRequest))
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusInternalServerError))
 	return nil
 }
 
-type healthResponse struct {
+type response struct {
 	Status string `json:"status"`
 }
 
@@ -29,14 +30,14 @@ type healthResponse struct {
 // 	return &status
 // }
 
-func (h *healthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *userCreationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(response{Status: "ok"})
 }
 
-func newHealthHandler() *healthHandler {
-	return &healthHandler{}
+func newUserCreationHandler() *userCreationHandler {
+	return &userCreationHandler{}
 }
 
-type healthHandler struct {
+type userCreationHandler struct {
 }
