@@ -11,7 +11,7 @@ func (h *userCreationHandler) SetupOpenAPIOperation(oc openapi.OperationContext)
 	oc.SetSummary("My Summary")
 	oc.SetDescription("This endpoint aggregates request in structured way.")
 	oc.AddReqStructure(createUserRequest{})
-	oc.AddRespStructure(createUserResponse{})
+	oc.AddRespStructure(createUserResponse{}, openapi.WithHTTPStatus(http.StatusCreated))
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusBadRequest))
 	oc.AddRespStructure(nil, openapi.WithContentType("text/html"), openapi.WithHTTPStatus(http.StatusInternalServerError))
 	return nil
