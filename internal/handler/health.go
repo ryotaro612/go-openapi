@@ -31,7 +31,7 @@ type healthResponse struct {
 
 func (h *healthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	json.NewEncoder(w).Encode(response{Status: "ok"})
+	json.NewEncoder(w).Encode(healthResponse{Status: "ok"})
 }
 
 func newHealthHandler() *healthHandler {
